@@ -4,6 +4,7 @@ Esta es una aplicación gráfica capaz de usar el módulo conversor para convert
 
 import wx
 from menu import miMenu
+from conversor import Leet
 
 class AppLeet(wx.Frame):
 
@@ -23,9 +24,13 @@ class AppLeet(wx.Frame):
         self._tb_ingresar = wx.TextCtrl(panel, wx.ID_EDIT, style=wx.TE_CENTRE | wx.TE_MULTILINE)
         self._tb_ingresar.SetFocus()
         self._btn_convertir = wx.Button(panel, wx.ID_CONVERT, label="&Convertir\tAlt+C")
+        self.Bind(wx.EVT_BUTTON, self.OnConvert, self._btn_convertir)
         lb_resultado = wx.StaticText(panel, wx.ID_ANY, label="&Resultado\tAlt+r")
         self._tb_resultado = wx.TextCtrl(panel, wx.ID_ANY, style=wx.TE_MULTILINE | wx.TE_CENTRE | wx.TE_READONLY)
+        self._tb_resultado.Hide()
         self._btn_copy = wx.Button(panel, wx.ID_COPY, label="&Copiar al portapapeles\tCtrl+Alt+c")
+        self.Bind(wx.EVT_BUTTON, self.OnCopy, self._btn_copy)
+        self._btn_copy.Hide()
         caja1.Add(lb_ingresar, 0, wx.ALL, 5)
         caja1.Add(self._tb_ingresar, 1, wx.EXPAND | wx.ALL, 5)
         caja1.Add(self._btn_convertir, 0, wx.ALL, 5)
@@ -37,6 +42,31 @@ class AppLeet(wx.Frame):
         panel.Layout()
 
 # Zona de eventos
+    def OnConvert(self, event):
+        texto_ingresado = self._tb_ingresar.GetValue()
+        resultado_leet = Leet.converter(texto_ingresado)
+        self._tb_ingresar.Clear()
+
+        if resultado_leet:
+            self._tb_resultado.SetValue(resultado_leet)
+            self._tb_resultado.Show(True)
+            self._tb_resultado.SetFocus()
+            self._btn_copy.Show(True)
+        else:
+            self._tb_resultado.Hide()
+            self._btn_copy.Hide()
+
+    def OnCopy(self, event):
+        resultado = self._tb_resultado.GetValue()  # Obtener el contenido del cuadro de texto
+        clipboard = wx.Clipboard.Get()  # Obtener el objeto del portapapeles
+        data = wx.TextDataObject(resultado)  # Crear un objeto de datos de texto
+        clipboard.Open()  # Abrir el portapapeles
+        clipboard.SetData(data)  # Establecer los datos en el portapapeles
+        clipboard.Close()  # Cerrar el portapapeles
+
+        wx.MessageBox("Texto copiado al portapapeles", "Éxito", wx.OK | wx.ICON_INFORMATION)
+
+
 
 
 if __name__ == "__main__":
