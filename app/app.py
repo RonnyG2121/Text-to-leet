@@ -3,6 +3,7 @@ Esta es una aplicación gráfica capaz de usar el módulo conversor para convert
 """
 
 import wx
+from menu import miMenu
 
 class AppLeet(wx.Frame):
 
@@ -11,6 +12,8 @@ class AppLeet(wx.Frame):
         self.InitUI()
         self.SetTitle("Texto a Leet")
         self.SetSize((400, 600))
+        mi_menu = miMenu()
+        self.SetMenuBar(mi_menu)
         self.Show(True)
 
     def InitUI(self):
