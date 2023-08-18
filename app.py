@@ -11,7 +11,7 @@ class AppLeet(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent)
         self.InitUI()
-        self.SetTitle("Texto a Leet")
+        self.SetTitle("Text to Leet")
         self.SetSize((400, 600))
         mi_menu = miMenu()
         self.SetMenuBar(mi_menu)
@@ -47,6 +47,10 @@ class AppLeet(wx.Frame):
         resultado_leet = Leet.converter(texto_ingresado)
         self._tb_ingresar.Clear()
 
+        if not texto_ingresado:
+            wx.MessageBox("Por favor ingrese texto primero antes de convertir", "¡Aviso!", wx.OK | wx.ICON_EXCLAMATION)
+            self._tb_ingresar.SetFocus()
+
         if resultado_leet:
             self._tb_resultado.SetValue(resultado_leet)
             self._tb_resultado.Show(True)
@@ -57,14 +61,17 @@ class AppLeet(wx.Frame):
             self._btn_copy.Hide()
 
     def OnCopy(self, event):
-        resultado = self._tb_resultado.GetValue()  # Obtener el contenido del cuadro de texto
-        clipboard = wx.Clipboard.Get()  # Obtener el objeto del portapapeles
-        data = wx.TextDataObject(resultado)  # Crear un objeto de datos de texto
-        clipboard.Open()  # Abrir el portapapeles
-        clipboard.SetData(data)  # Establecer los datos en el portapapeles
-        clipboard.Close()  # Cerrar el portapapeles
-
+        resultado = self._tb_resultado.GetValue()
+        clipboard = wx.Clipboard.Get()
+        data = wx.TextDataObject(resultado)
+        clipboard.Open()
+        clipboard.SetData(data)
+        clipboard.Close()
+        self._tb_resultado.Clear()
+        self._tb_resultado.Hide()
+        self._btn_copy.Hide()
         wx.MessageBox("Texto copiado al portapapeles", "Éxito", wx.OK | wx.ICON_INFORMATION)
+        self._tb_ingresar.SetFocus()
 
 
 
